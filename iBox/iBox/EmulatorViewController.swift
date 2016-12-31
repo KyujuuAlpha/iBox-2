@@ -75,10 +75,6 @@ class EmulatorViewController: UIViewController {
     // MARK: - Methods
     
     @IBAction func aDown(sender: AnyObject) { //Deprecated
-        //self.generator!.selectionChanged()
-        //if let button = sender as? UIButton {
-        //    BXRenderView.sharedInstance().vKeyDown(Int32(button.tag))
-       //}
     }
     
     @IBOutlet weak var shift1: UIButton!
@@ -226,16 +222,6 @@ class EmulatorViewController: UIViewController {
                 configString += "ata\(ataInterface.id): enabled=1, "
                 
                 let drives = ataInterface.drives!.sortedArrayUsingDescriptors([NSSortDescriptor(key: "master", ascending: false)]) as! [Drive]
-                
-                // add IO Addresses
-                
-                //for drive in drives {
-                    
-                    // get index
-                    //let index = (drives as NSArray).indexOfObject(drive)
-                    
-                    //configString += "ioaddr\(index + 1)=\(drive.ioAddress), "
-                //}
                 
                 //add second address
                 configString += "ioaddr1=0x1f0, ioaddr2=0x3f0, "
