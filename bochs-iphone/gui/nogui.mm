@@ -268,7 +268,6 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
                 isTap = 2;
             } else {
                 isTap = 1;
-                oldTime = prevTime + 270;
             }
             prevX = p.x - pOld.x;
             prevY = p.y - pOld.y;
@@ -392,6 +391,7 @@ void bx_nogui_gui_c::handle_events(void)
 {
     if(prevTime > 0) {
         if(-[date timeIntervalSinceNow]*1000 >= prevTime) {
+            oldTime = -[date timeIntervalSinceNow]*1000 + 270;
             prevTime = 0;
             addToEventBuffer(1, prevX, prevY, 0);
         }
