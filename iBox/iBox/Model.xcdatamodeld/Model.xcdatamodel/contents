@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="15G31" minimumToolsVersion="Xcode 4.3" sourceLanguage="Objective-C" userDefinedModelVersionIdentifier="">
+    <entity name="ATAInterface" representedClassName="iBox.ATAInterface" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="Integer 16" minValueString="0" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="irq" attributeType="Integer 16" minValueString="0" defaultValueString="14" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="configuration" maxCount="1" deletionRule="Nullify" destinationEntity="Configuration" inverseName="ataInterfaces" inverseEntity="Configuration" syncable="YES"/>
+        <relationship name="drives" toMany="YES" maxCount="2" deletionRule="Cascade" destinationEntity="Drive" inverseName="ataInterface" inverseEntity="Drive" syncable="YES"/>
+    </entity>
+    <entity name="CDRom" representedClassName="iBox.CDRom" parentEntity="Drive" syncable="YES">
+        <attribute name="discInserted" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="Configuration" representedClassName="iBox.Configuration" syncable="YES">
+        <attribute name="bootDevice" attributeType="String" defaultValueString="cdrom" syncable="YES"/>
+        <attribute name="cpuIPS" attributeType="Integer 32" minValueString="1" defaultValueString="5555555" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="dmaTimer" attributeType="Integer 32" minValueString="1" defaultValueString="600000" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="feedbackEnabled" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="keyboardPasteDelay" attributeType="Integer 32" minValueString="0" defaultValueString="100000" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="keyboardSerialDelay" attributeType="Integer 32" minValueString="0" defaultValueString="250" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="macAddress" attributeType="String" defaultValueString="01:23:45:67:89:AB" syncable="YES"/>
+        <attribute name="midiMode" optional="YES" attributeType="Integer 16" minValueString="0" defaultValueString="1" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="name" attributeType="String" defaultValueString="New Configuration" syncable="YES"/>
+        <attribute name="networkEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="ramSize" attributeType="Integer 16" minValueString="16" maxValueString="2048" defaultValueString="256" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sdlEnabled" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="soundBlaster16" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="vgaExtension" attributeType="String" defaultValueString="vbe" syncable="YES"/>
+        <attribute name="vgaUpdateInterval" attributeType="Integer 64" minValueString="1" maxValueString="60" defaultValueString="5" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="waveMode" attributeType="Integer 16" defaultValueString="1" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="ataInterfaces" optional="YES" toMany="YES" maxCount="4" deletionRule="Cascade" destinationEntity="ATAInterface" inverseName="configuration" inverseEntity="ATAInterface" syncable="YES"/>
+    </entity>
+    <entity name="Drive" representedClassName="iBox.Drive" isAbstract="YES" syncable="YES">
+        <attribute name="fileName" attributeType="String" defaultValueString="c.img" syncable="YES"/>
+        <attribute name="ioAddress" attributeType="String" defaultValueString="0x1f0" syncable="YES"/>
+        <attribute name="master" optional="YES" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="NO" syncable="YES"/>
+        <relationship name="ataInterface" maxCount="1" deletionRule="Nullify" destinationEntity="ATAInterface" inverseName="drives" inverseEntity="ATAInterface" syncable="YES"/>
+    </entity>
+    <entity name="FloppyDrive" representedClassName="iBox.FloppyDrive" parentEntity="Drive" syncable="YES">
+        <attribute name="discInserted" optional="YES" attributeType="Boolean" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <entity name="HardDiskDrive" representedClassName="iBox.HardDiskDrive" parentEntity="Drive" syncable="YES">
+        <attribute name="cylinders" attributeType="Integer 16" minValueString="1" maxValueString="262144" defaultValueString="1" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="heads" attributeType="Integer 16" defaultValueString="16" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="sectorsPerTrack" attributeType="Integer 16" defaultValueString="63" usesScalarValueType="NO" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="ATAInterface" positionX="-36" positionY="108" width="128" height="103"/>
+        <element name="CDRom" positionX="-54" positionY="9" width="128" height="58"/>
+        <element name="Configuration" positionX="-63" positionY="-18" width="128" height="300"/>
+        <element name="Drive" positionX="-63" positionY="0" width="128" height="103"/>
+        <element name="FloppyDrive" positionX="-45" positionY="99" width="128" height="60"/>
+        <element name="HardDiskDrive" positionX="-36" positionY="18" width="128" height="90"/>
+    </elements>
+</model>

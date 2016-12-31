@@ -1,0 +1,129 @@
+    <HTML>
+<HEAD>
+<TITLE>bochs: The Open Source IA-32 Emulation Project (Download Current Release)</TITLE>
+
+<!--#include virtual="includes/header.txt" -->
+
+ <!--content starts here-->
+ <img src="images/logo.gif" alt="A Window, Tux, and the BSD Daemon" width="160" height="175" align="right">
+
+ <BR><font face="arial, helvetica" color="#1e029a" size="4"><b>Latest release:</b> Bochs 2.6.6</font><BR><BR>
+
+Bochs 2.6.6 is a bugfix release. Here is the list of changes :
+
+<ul>
+<li>CPU / CPUDB
+  <ul>
+  <li>Allow sandy bridge configuration even when AVX is not compiled in
+  </ul>
+<li>Configure and compile
+  <ul>
+  <li>Fixed compilation error when 3dnow support is enabled
+  <li>Speedup Visual Studio build by almost 20% by adding /Gr compiler option
+  </ul>
+<li>Misc
+  <ul>
+  <li>Fixed minimizing win32 gui window and resolution change while minimized
+  <li>Added compiled SeaBIOS 1.7.5 image into Bochs tree along with Bochs BIOS images
+  <li>Documentation fixes and updates
+  </ul>
+</ul>
+
+The binary packages for Linux and Windows are built with these featues :
+<ul>
+<li> x86-64 emulation with all optimizations enabled
+<li> devices:
+ <ul>
+ <li> chipset: PCI (i430FX / i440FX), ACPI
+ <li> video: Bochs VBE, Cirrus SVGA and Voodoo1
+ <li> sound: SB16 (ISA) and ES1370 (PCI)
+ <li> network: NE2000 (ISA/PCI) and E1000 (PCI)
+ <li> USB: OHCI, UHCI, xHCI and 7 pluggable device types
+ </ul>
+<li> Display libraries:
+ <ul>
+ <li> Linux: nogui, rfb, sdl, term, vncsrv, wx, x
+ <li> Windows: nogui, rfb, win32
+ </ul>
+</ul>
+
+<a href="http://svn.code.sf.net/p/bochs/code/tags/REL_2_6_6_FINAL/bochs/CHANGES">
+Details on what has changed since version 2.6.5
+</a>
+
+<BR/><BR/>
+
+ <BR><font face="arial, helvetica" color="#1e029a" size="4"><b>Previous release:</b> Bochs 2.6.5</font><BR><BR>
+
+About a year after the bugfix release 2.6.2 we have a new intermediate (bugfix+)
+release. Here a brief summary of changes :
+
+<ul>
+<li>CPU: extra 5-10% emulation speedup with new trace linking optimization
+<li>CPU: implemented new instructions (e.g. AVX-512, SHA, XSAVEC)
+<li>CPUDB: added 2 new CPU models
+<li>Bugfixes for CPU emulation correctness (including some critical ones)
+<li>Gui debugger output window now can be used as a log viewer
+<li>Added built-in slirp (user-mode networking) support (ported from Qemu)
+<li>Added global sound config option and volume control support to the devices
+<li>Added new experimental gui 'vncsrv" using the LibVNCServer library
+<li>Rewrite of the bximage utility in C++ for image creation, conversion and resize
+</ul>
+
+<BR>
+
+<a href="http://svn.code.sf.net/p/bochs/code/tags/REL_2_6_5_FINAL/bochs/CHANGES">
+Details on what has changed since version 2.6.2
+</a>
+
+ <BR><BR>
+ <BR><font face="arial, helvetica" color="#1e029a" size="4"><b>Bochs Binary and Source Releases</b></font><BR><BR>
+The latest release of Bochs is available in these file formats :<BR>
+<ul>
+<li> Win32 binary NSIS installer package (EXE)
+<li> Win32 binary with x86-64 CPU + SMP support (ZIP) - Bochs installation is required
+<li> Win64 binary - Bochs installation is required
+<li> Linux binary RPM (32 / 64 bit)
+<li> Platform independant source package (TAR.GZ)
+<li> Win32 specific source package prepared for MSVC (ZIP)
+<li> Linux source RPM
+</ul>
+You can download any release since March 2001 on the 
+<a href="http://bochs.sourceforge.net/cgi-bin/topper.pl?name=See+All+Releases&url=http://sourceforge.net/project/showfiles.phpqmrkgroup_ideq12580">Releases Page</a>.
+
+
+<BR><BR>
+
+<a name="cvssnap"><BR><font face="arial, helvetica" color="#1e029a" size="4"><b>Download SVN
+Snapshot</b></font><BR><BR></a>
+
+<b>SVN Snapshot:</b>
+Bochs, like many other open source projects, uses SVN (Subversion) to keep
+track of source code.  Unlike the current release, the SVN version of the
+sources contains everything the developers have written to this date, and it
+can change daily (or even hourly).  As a result, the SVN version of Bochs will
+have more features and bug fixes than the release, but also it may be somewhat
+less stable.  You can decide if you prefer to go exploring and try out our
+newest code, or stick with the better-tested release.
+<BR><BR>
+
+<!--#include virtual="svn-snapshot/bochs-snapshot-links.html" -->
+
+The SVN snapshots are provided as a convenience only.  Of course, you could
+also get the same information using SVN itself.  Some of the benefits of
+using SVN directly are: you can get any release or version, view the log
+messages that say what files were changed, and make patches very easily
+with "svn diff -u".
+
+ <!--content ends here -->
+
+
+<!--#include virtual="includes/footer.txt" -->
+
+
+Last Modified on <!--#flastmod file="getcurrent.html" -->.<BR>
+
+<!--#include virtual="includes/cright.txt" -->
+
+</BODY>
+</HTML>
