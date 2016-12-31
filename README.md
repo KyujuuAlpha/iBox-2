@@ -6,8 +6,8 @@ Bochs for iOS, ALL credit goes to ColemanCDA for the base of iBox, Baddaboo for 
 Changes:
 * Updated to iOS 10 and XCode 8, still is Swift 2.3
 * Updated to Bochs 2.6.8
-* Clunky on-screen keyboard
-   * NOTE: Shift is toggle, visual indicator is planned
+* **Clunky** on-screen keyboard
+   * NOTE: Shift is toggle, ~~visual indicator is planned~~
    * Shake to hide, rotate device to show <-- TEMPORARY
 * SDL 2.0 sound support
 * Networking in Beta stages
