@@ -86,7 +86,8 @@ static EventStruct eventBuffer[MAX_EVENTS];
 static int eventBufferPos;
 static unsigned indexed_colors[256][3];
 static int touchX, touchY, touchCount;
-static long prevTime;
+static bool quickTap;
+static long prevTime, oldTime;
 static int prevX, prevY;
 static int averageWidth = 0, averageHeight = 12, currentState = -1;
 static float fwidth, fheight, ratio = 480.0f / 320.0f;
@@ -231,9 +232,17 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
 			touchX = p.x;
 			touchY = p.y;
 		}
-		
 		touchCount++;
 	}
+    if(oldTime > 0 && touchCount == 1) {
+        struct timespec spec;
+        clock_gettime(CLOCK_REALTIME, &spec);
+        if(round(spec.tv_nsec / 1.0e6) <= oldTime) {
+            oldTime = 0;
+            quickTap = YES;
+            addToEventBuffer(1, touchX, touchY, 1);
+        }
+    }
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
@@ -244,7 +253,7 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
 		CGPoint p = [touch locationInView:self];
 		CGPoint pOld = [touch previousLocationInView:self];
 		
-		addToEventBuffer(1, p.x - pOld.x, p.y - pOld.y, 0);
+        addToEventBuffer(1, p.x - pOld.x, p.y - pOld.y, quickTap == YES ? 1 : 0);
 	}
 }
 
@@ -274,7 +283,7 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
             isTap = -1;
         }
 	}
-    
+    quickTap = NO;
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
@@ -388,22 +397,14 @@ void bx_nogui_gui_c::handle_events(void)
         struct timespec spec;
         clock_gettime(CLOCK_REALTIME, &spec);
         if(round(spec.tv_nsec / 1.0e6) >= prevTime) {
+            oldTime = round(spec.tv_nsec / 1.0e6) + 200;
             prevTime = 0;
             addToEventBuffer(1, prevX, prevY, 0);
         }
     }
 	while(eventBufferPos)
 	{
-        
 		eventBufferPos--;
-        if(prevTime > 0) {
-            struct timespec spec;
-            clock_gettime(CLOCK_REALTIME, &spec);
-            if(round(spec.tv_nsec / 1.0e6) >= prevTime) {
-                prevTime = 0;
-                addToEventBuffer(1, prevX, prevY, 0);
-            }
-        }
 		if (eventBuffer[eventBufferPos].isMouse)
 		{
             int buttons = 0;
