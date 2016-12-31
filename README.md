@@ -17,6 +17,4 @@ Changes:
 
 ====
 
-iBox -- https://github.com/colemancda/iBox
-Bochs -- http://bochs.sourceforge.net
-SDL 2.0 -- https://www.libsdl.org
+iBox -- https://github.com/colemancda/iBox - Bochs -- http://bochs.sourceforge.net - SDL 2.0 -- https://www.libsdl.org
