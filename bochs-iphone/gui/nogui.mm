@@ -91,6 +91,7 @@ static long prevTime, oldTime;
 static int prevX, prevY;
 static int averageWidth = 0, averageHeight = 12, currentState = -1;
 static float fwidth, fheight, ratio = 480.0f / 320.0f;
+static NSDate *date = [NSDate date];
 
 /////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
@@ -235,12 +236,9 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
 		touchCount++;
 	}
     if(oldTime > 0 && touchCount == 1) {
-        struct timespec spec;
-        clock_gettime(CLOCK_REALTIME, &spec);
-        if(round(spec.tv_nsec / 1.0e6) <= oldTime) {
+        if(-[date timeIntervalSinceNow]*1000 <= oldTime) {
             oldTime = 0;
             quickTap = YES;
-            addToEventBuffer(1, touchX, touchY, 1);
         }
     }
 }
@@ -264,21 +262,20 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
 	{
 		CGPoint p = [touch locationInView:self];
 		CGPoint pOld = [touch previousLocationInView:self];
-		
-        if ((abs(p.x - touchX) < 5) && (abs(p.y-touchY) < 5) && isTap == 0) {
+        if ((abs(p.x - touchX) < 5) && (abs(p.y-touchY) < 5) && isTap == 0 && quickTap == NO) {
+            prevTime = -[date timeIntervalSinceNow]*1000 + 10;
             if (touches.count == 2 || touchCount == 2) {
                 isTap = 2;
-            } else
+            } else {
                 isTap = 1;
-            struct timespec spec;
-            clock_gettime(CLOCK_REALTIME, &spec);
-            prevTime = round(spec.tv_nsec / 1.0e6) + 10;
+                oldTime = prevTime + 270;
+            }
             prevX = p.x - pOld.x;
             prevY = p.y - pOld.y;
             
         }
         touchCount--;
-        if(isTap > 0) {
+        if(isTap >= 0) {
             addToEventBuffer(1, p.x - pOld.x, p.y - pOld.y, isTap);
             isTap = -1;
         }
@@ -394,10 +391,7 @@ void bx_nogui_gui_c::specific_init(int argc, char **argv, unsigned tilewidth, un
 void bx_nogui_gui_c::handle_events(void)
 {
     if(prevTime > 0) {
-        struct timespec spec;
-        clock_gettime(CLOCK_REALTIME, &spec);
-        if(round(spec.tv_nsec / 1.0e6) >= prevTime) {
-            oldTime = round(spec.tv_nsec / 1.0e6) + 200;
+        if(-[date timeIntervalSinceNow]*1000 >= prevTime) {
             prevTime = 0;
             addToEventBuffer(1, prevX, prevY, 0);
         }
