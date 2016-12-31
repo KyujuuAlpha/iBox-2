@@ -135,7 +135,7 @@
                                     <barButtonItem title="Item" id="7Op-V5-ega"/>
                                 </items>
                             </toolbar>
-                            <view contentMode="scaleAspectFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AzL-C1-Bzj">
+                            <view multipleTouchEnabled="YES" contentMode="scaleAspectFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AzL-C1-Bzj">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="435"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

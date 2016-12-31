@@ -36,6 +36,8 @@ class EmulatorViewController: UIViewController {
         
         self.view.addSubview(BXRenderView.sharedInstance())
         
+        BXRenderView.sharedInstance().multipleTouchEnabled = true
+        
         //Buttons
         self.shift1.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
         self.shift2.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)

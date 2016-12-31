@@ -85,7 +85,7 @@ static int currentResX, currentResY, currentBpp;
 static EventStruct eventBuffer[MAX_EVENTS];
 static int eventBufferPos;
 static unsigned indexed_colors[256][3];
-static int touchX, touchY;
+static int touchX, touchY, touchCount;
 static long prevTime;
 static int prevX, prevY;
 static int averageWidth = 0, averageHeight = 12, currentState = -1;
@@ -222,11 +222,9 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
 {
-	int count = 0;
-    
 	for (UITouch* touch in touches)
 	{
-		if (count == 0)
+		if (touchCount == 0)
 		{
 			CGPoint p = [touch locationInView:self];
 
@@ -234,7 +232,7 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
 			touchY = p.y;
 		}
 		
-		count++;
+		touchCount++;
 	}
 }
 
@@ -250,28 +248,33 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
 	}
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event //messy, needs a rewrite
 {
+    int isTap = 0;
 	for (UITouch* touch in touches)
 	{
 		CGPoint p = [touch locationInView:self];
 		CGPoint pOld = [touch previousLocationInView:self];
 		
-		int isTap = 0;
-		
-        if ((abs(p.x - touchX) < 5) && (abs(p.y-touchY) < 5)) {
-            if (touches.count > 1)
+        if ((abs(p.x - touchX) < 5) && (abs(p.y-touchY) < 5) && isTap == 0) {
+            if (touches.count == 2 || touchCount == 2) {
                 isTap = 2;
-            else
+            } else
                 isTap = 1;
             struct timespec spec;
             clock_gettime(CLOCK_REALTIME, &spec);
             prevTime = round(spec.tv_nsec / 1.0e6) + 10;
             prevX = p.x - pOld.x;
             prevY = p.y - pOld.y;
+            
         }
-		addToEventBuffer(1, p.x - pOld.x, p.y - pOld.y, isTap);
+        touchCount--;
+        if(isTap > 0) {
+            addToEventBuffer(1, p.x - pOld.x, p.y - pOld.y, isTap);
+            isTap = -1;
+        }
 	}
+    
 }
 
 - (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event
@@ -411,7 +414,7 @@ void bx_nogui_gui_c::handle_events(void)
             if (eventBuffer[eventBufferPos].button == 2) {
                 buttons |= 0x02;
             }
-			DEV_mouse_motion(eventBuffer[eventBufferPos].x, eventBuffer[eventBufferPos].y, 0, buttons, eventBuffer[eventBufferPos].button);
+			DEV_mouse_motion(eventBuffer[eventBufferPos].x, eventBuffer[eventBufferPos].y, 0, buttons, 0);
 		}
 	}
 }
