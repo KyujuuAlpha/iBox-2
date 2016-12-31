@@ -36,6 +36,11 @@ class EmulatorViewController: UIViewController {
         
         self.view.addSubview(BXRenderView.sharedInstance())
         
+        //Buttons
+        self.shift1.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        self.shift2.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        self.etcBtn.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+        
         // start emulator
         NSThread.detachNewThreadSelector("startEmulator", toTarget: self, withObject: nil)
         
@@ -90,20 +95,23 @@ class EmulatorViewController: UIViewController {
         if sender.tag == 200 { //etc
             if self.etcced == true {
                 self.etcced = false
+                self.etcBtn.layer.shadowOpacity = 0.0
                 self.extrasContainerView.hidden = true
             } else {
                 self.etcced = true
+                self.etcBtn.layer.shadowOpacity = 0.3
                 self.extrasContainerView.hidden = false
             }
         } else if sender.tag == 1 { //shift
             if self.shifted == true {
-                //self.shift1.shad
-                //self.shift2.highlighted = false
+                self.shift1.layer.shadowOpacity = 0.0
+                self.shift2.layer.shadowOpacity = 0.0
                 self.shifted = false
                 BXRenderView.sharedInstance().vKeyUp(Int32(sender.tag))
             } else {
-                //self.shift1.highlighted = true
-                //self.shift2.highlighted = true
+                self.shift1.layer.shadowOpacity = 0.3
+                self.shift2.layer.shadowOpacity = 0.3
+                
                 self.shifted = true
                 BXRenderView.sharedInstance().vKeyDown(Int32(sender.tag))
             }
