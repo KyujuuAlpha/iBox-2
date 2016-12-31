@@ -329,7 +329,7 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
                             unichar ch = textBuffer[x + y*80] & 0xff;
                             
                             NSString * s = [[NSString alloc] initWithCharacters:&ch length:1];
-                            [s drawAtPoint:CGPointMake(averageWidth + x * averageWidth, y * averageHeight) withAttributes:fontAttributes];
+                            [s drawAtPoint:CGPointMake(x * averageWidth, y * averageHeight) withAttributes:fontAttributes];
                         }
                     }
                 }
