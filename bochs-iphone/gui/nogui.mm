@@ -465,7 +465,7 @@ void bx_nogui_gui_c::graphics_tile_update(Bit8u *tile, unsigned x0, unsigned y0)
 			int py = y + y0;
 			memcpy(&imageData[x0 + py*currentResX], &tile[y*tsx*4], tsy * 4);
 		}
-	}else if (currentBpp == 16)
+	}else if (currentBpp == 16 || currentBpp == 24)
 	{
 		for (int y = 0; y < tsy; y++)
 		{
