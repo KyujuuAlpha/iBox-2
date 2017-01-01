@@ -210,7 +210,7 @@ class EmulatorViewController: UIViewController {
         configString += "display_library: nogui\n"
         configString += "megs: \(configuration.ramSize.intValue)\n"
         configString += "boot: \(configuration.bootDevice)\n"
-        configString += "pci: enabled=1, chipset=i440fx" //auto assign
+        configString += "pci: enabled=1, chipset=i440fx\n" //auto assign
         
         // add drives...
         
