@@ -827,7 +827,7 @@ __attribute__ ((format (printf, formatArg, firstArg)))
 #define BX_SUPPORT_CLGD54XX 1
 
 // Experimental 3dfx Voodoo (SST-1/2) emulation
-#define BX_SUPPORT_VOODOO 0
+#define BX_SUPPORT_VOODOO 1
 
 // USB host controllers
 #define BX_SUPPORT_USB_UHCI 0
