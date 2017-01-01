@@ -224,6 +224,7 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
 
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event;
 {
+    touchCount = 0;
 	for (UITouch* touch in touches)
 	{
 		if (touchCount == 0)
