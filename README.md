@@ -1,7 +1,7 @@
 iBox 2.6.8 -- BETA
 ====
 
-Bochs for iOS, ALL credit goes to ColemanCDA for the base of iBox, Baddaboo for updating iBox with 64-Bit support, and the team behind Bochs. There is non-jailbroken device support
+Bochs for iOS, ALL credit goes to ColemanCDA for the base of iBox, Baddaboo for updating iBox with 64-Bit support, and the team behind Bochs. There is non-jailbroken device support.  Use dev branch to toy with Voodoo 3d, linux should also be supported although colors may be wack. 
 
 FOR SPEED (Warning: WILL warm up your device):
 * set IPS to 4,000,000
