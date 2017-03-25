@@ -1,7 +1,9 @@
 iBox 2.6.8 -- BETA
 ====
 
-Bochs for iOS, ALL credit goes to ColemanCDA for the base of iBox, Baddaboo for updating iBox with 64-Bit support, and the team behind Bochs. There is non-jailbroken device support.  Use dev branch to toy with Voodoo 3d, linux should also be supported although colors may be wack. 
+Bochs for iOS, ALL credit goes to ColemanCDA for the base of iBox, Baddaboo for updating iBox with 64-Bit support, and the team behind Bochs. There is non-jailbroken device support. Use dev branch to toy with Voodoo 3d, linux should also be supported although colors may be wack. 
+
+If you are trying to run it on a simulator, it may not work due to the SDL library being built for the ARM architecture.  Try running it from an iOS Device instead.
 
 FOR SPEED (Warning: WILL warm up your device):
 * set IPS to 4,000,000
