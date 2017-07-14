@@ -210,6 +210,7 @@ class EmulatorViewController: UIViewController {
         configString += "display_library: nogui\n"
         configString += "megs: \(configuration.ramSize.intValue)\n"
         configString += "boot: \(configuration.bootDevice)\n"
+        configString += "pci: enabled=1, chipset=i440fx\n" //auto assign
         
         // add drives...
         
@@ -333,15 +334,13 @@ class EmulatorViewController: UIViewController {
         
         //ENABLE THE NETWORK
         if configuration.networkEnabled.boolValue {
-            configString += "ne2k: ioaddr=0x300, mac=\(configuration.macAddress)" + ", ethmod=fbsd, ethdev=en0\n"
+            configString += "ne2k: ioaddr=0x300, mac=\(configuration.macAddress)" + ", ethmod=fbsd, ethdev=vnet\n"
         }
         
         configString += "floppy_bootsig_check: disabled=1" + "\n"
         configString += "vga: extension=\(configuration.vgaExtension), update_freq=\(configuration.vgaUpdateInterval.integerValue)" + "\n"
         
-        if configuration.vgaExtension == "cirrus" {
-            configString += "pci: enabled=1, chipset=i440fx, slot1=cirrus" + "\n"
-        }
+        configString += "voodoo: enabled=1, model=voodoo1" + "\n"
         
         configString += "cpu: count=1, model=corei5_arrandale_m520" + "\n" //no way to change cpu yet :)
         configString += "mouse: enabled=1, type=ps2" + "\n"

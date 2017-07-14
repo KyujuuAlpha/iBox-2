@@ -52,6 +52,7 @@ public:
 	void show_ips(Bit32u ips_count);
 
 	DECLARE_GUI_VIRTUAL_METHODS()
+    DECLARE_GUI_NEW_VIRTUAL_METHODS()
 };
 
 // declare one instance of the gui object and call macro to insert the
@@ -78,7 +79,7 @@ typedef struct _EventStruct
 } EventStruct;
 
 static BXRenderView* renderView;
-static int tsx, tsy;
+static int tsx, tsy, bpr;
 static bool isTextMode;
 static unsigned short textBuffer[80*26];
 static int currentResX, currentResY, currentBpp;
@@ -126,6 +127,11 @@ static NSDate *date = [NSDate date];
         
     }
     return self;
+}
+
+- (CGContextRef)imageContext
+{
+    return imageContext;
 }
 
 - (id)init:(UIWindow*)window
@@ -184,7 +190,8 @@ static NSDate *date = [NSDate date];
 	
 	CGContextSetRGBFillColor(imageContext, 0.5f, 0.5f, 0.5f, 1.0f);
 	CGContextFillRect(imageContext, CGRectMake(0, 0, sz.width, sz.height));
-	
+    
+    bpr = sz.width*4;
 }
 
 - (void)doRedraw
@@ -356,11 +363,6 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
 	return imageData;
 }
 
-- (CGContextRef)imageContext
-{
-	return imageContext;
-}
-
 - (void)vKeyDown:(int)keyCode
 {
     DEV_kbd_gen_scancode(keyCode|BX_KEY_PRESSED);
@@ -457,7 +459,6 @@ void bx_nogui_gui_c::graphics_tile_update(Bit8u *tile, unsigned x0, unsigned y0)
 {
 	isTextMode = NO;
 	int* imageData = [renderView imageData];
-	
 	if (currentBpp == 32) // not tested yet
 	{
 		for (int y = 0; y < tsy; y++)
@@ -465,7 +466,7 @@ void bx_nogui_gui_c::graphics_tile_update(Bit8u *tile, unsigned x0, unsigned y0)
 			int py = y + y0;
 			memcpy(&imageData[x0 + py*currentResX], &tile[y*tsx*4], tsy * 4);
 		}
-	}else if (currentBpp == 16)
+	}else if (currentBpp == 16 || currentBpp == 24)
 	{
 		for (int y = 0; y < tsy; y++)
 		{
@@ -504,12 +505,43 @@ void bx_nogui_gui_c::graphics_tile_update(Bit8u *tile, unsigned x0, unsigned y0)
 	}
 }
 
+bx_svga_tileinfo_t *bx_nogui_gui_c ::graphics_tile_info(bx_svga_tileinfo_t *info)
+{
+    info->bpp = currentBpp;
+    //info->pitch = bpr;
+    //info->is_indexed = 0;
+    //info->is_little_endian = 0;
+    return info;
+}
+
+void bx_nogui_gui_c::graphics_tile_update_in_place(unsigned x0, unsigned y0,
+                                                   unsigned w, unsigned h)
+{    
+}
+
+Bit8u *bx_nogui_gui_c::graphics_tile_get(unsigned x0, unsigned y0,
+                                     unsigned *w, unsigned *h)
+{
+    if (x0+tsx > currentResX) {
+        *w = currentResX - x0;
+    } else {
+        *w = tsx;
+    }
+    
+    if (y0+tsy > currentResY) {
+        *h = currentResY - y0;
+    } else {
+        *h = tsy;
+    }
+    int* imageData = [renderView imageData];
+    return (Bit8u *)imageData + bpr * y0 + currentBpp * x0;
+}
+
 void bx_nogui_gui_c::dimension_update(unsigned x, unsigned y, unsigned fheight, unsigned fwidth, unsigned bpp)
 {
 	currentResX = x;
-	currentResX = y;
+	currentResY = y;
 	currentBpp = bpp;
-	
 	if (bpp >= 8)
 	{
 		[renderView recreateImageContextWithX:x y:y bpp:bpp];
