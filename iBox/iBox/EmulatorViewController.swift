@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import BochsKit
 
-private let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first as NSURL?
+private let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first as URL?
 
 class EmulatorViewController: UIViewController {
     
@@ -36,7 +36,7 @@ class EmulatorViewController: UIViewController {
         
         self.view.addSubview(BXRenderView.sharedInstance())
         
-        BXRenderView.sharedInstance().multipleTouchEnabled = true
+        BXRenderView.sharedInstance().isMultipleTouchEnabled = true
         
         //Buttons
         self.shift1.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
@@ -44,12 +44,12 @@ class EmulatorViewController: UIViewController {
         self.etcBtn.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
         
         // start emulator
-        NSThread.detachNewThreadSelector("startEmulator", toTarget: self, withObject: nil)
+        Thread.detachNewThreadSelector(#selector(EmulatorViewController.startEmulator), toTarget: self, with: nil)
         
-        NSThread.detachNewThreadSelector("startRendering", toTarget: self, withObject: nil)
+        Thread.detachNewThreadSelector(#selector(EmulatorViewController.startRendering), toTarget: self, with: nil)
     }
     
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         // hide navigation bar
@@ -66,17 +66,17 @@ class EmulatorViewController: UIViewController {
     
     @IBOutlet weak var keyboardContainer: UIView!
     
-    override func motionEnded(motion: UIEventSubtype, withEvent event: UIEvent?) { //temporary "hide"
+    override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) { //temporary "hide"
         var newFrame: CGRect = BXRenderView.sharedInstance().frame
         newFrame.size.height += keyboardContainer.frame.size.height
         BXRenderView.sharedInstance().frame = newFrame
         BXRenderView.sharedInstance().rescaleFrame()
-        generator2?.notificationOccurred(.Success)
+        generator2?.notificationOccurred(.success)
     }
     
     // MARK: - Methods
     
-    @IBAction func aDown(sender: AnyObject) { //Deprecated
+    @IBAction func aDown(_ sender: AnyObject) { //Deprecated
     }
     
     @IBOutlet weak var shift1: UIButton!
@@ -86,7 +86,7 @@ class EmulatorViewController: UIViewController {
     var shifted: Bool! = false
     var etcced: Bool! = false
     
-    @IBAction func keyDown(sender: UIButton) {
+    @IBAction func keyDown(_ sender: UIButton) {
         if configuration?.feedbackEnabled.boolValue == true {
             self.generator!.selectionChanged()
         }
@@ -94,11 +94,11 @@ class EmulatorViewController: UIViewController {
             if self.etcced == true {
                 self.etcced = false
                 self.etcBtn.layer.shadowOpacity = 0.0
-                self.extrasContainerView.hidden = true
+                self.extrasContainerView.isHidden = true
             } else {
                 self.etcced = true
                 self.etcBtn.layer.shadowOpacity = 0.3
-                self.extrasContainerView.hidden = false
+                self.extrasContainerView.isHidden = false
             }
         } else if sender.tag == 1 { //shift
             if self.shifted == true {
@@ -151,7 +151,7 @@ class EmulatorViewController: UIViewController {
         }
     }
     
-    @IBAction func keyUp(sender: UIButton) {
+    @IBAction func keyUp(_ sender: UIButton) {
         if sender.tag != 1 && sender.tag != 200 {
             if shifted == true {
                 switch sender.tag {
@@ -188,15 +188,15 @@ class EmulatorViewController: UIViewController {
         
         let configFilePath = self.exportConfigurationToTemporaryFile(self.configuration!)
         
-        BXEmulator.startBochsWithConfigPath(configFilePath);
+        BXEmulator.startBochs(withConfigPath: configFilePath);
     }
     
     func startRendering() {
         
-        let timer = NSTimer(timeInterval: 0.01, target: self, selector: "redrawRenderer", userInfo: nil, repeats: true)
+        let timer = Timer(timeInterval: 0.01, target: self, selector: #selector(EmulatorViewController.redrawRenderer), userInfo: nil, repeats: true)
         
-        NSRunLoop.currentRunLoop().addTimer(timer, forMode: NSDefaultRunLoopMode)
-        NSRunLoop.currentRunLoop().run()
+        RunLoop.current.add(timer, forMode: RunLoopMode.defaultRunLoopMode)
+        RunLoop.current.run()
     }
     
     func redrawRenderer() {
@@ -204,11 +204,11 @@ class EmulatorViewController: UIViewController {
         BXRenderView.sharedInstance().doRedraw()
     }
     
-    func exportConfigurationToTemporaryFile(configuration: Configuration) -> String {
+    func exportConfigurationToTemporaryFile(_ configuration: Configuration) -> String {
         
         var configString = "config_interface: textconfig\n"
         configString += "display_library: nogui\n"
-        configString += "megs: \(configuration.ramSize.intValue)\n"
+        configString += "megs: \(configuration.ramSize.int32Value)\n"
         configString += "boot: \(configuration.bootDevice)\n"
         configString += "pci: enabled=1, chipset=i440fx\n" //auto assign
         
@@ -216,7 +216,7 @@ class EmulatorViewController: UIViewController {
         
         if configuration.ataInterfaces != nil {
             
-            let interfaces = configuration.ataInterfaces!.sortedArrayUsingDescriptors([NSSortDescriptor(key: "id", ascending: true)]) as! [ATAInterface]
+            let interfaces = configuration.ataInterfaces!.sortedArray(using: [NSSortDescriptor(key: "id", ascending: true)]) as! [ATAInterface]
             
             // add ATA interfaces
                 
@@ -224,7 +224,7 @@ class EmulatorViewController: UIViewController {
                 
                 configString += "ata\(ataInterface.id): enabled=1, "
                 
-                let drives = ataInterface.drives!.sortedArrayUsingDescriptors([NSSortDescriptor(key: "master", ascending: false)]) as! [Drive]
+                let drives = ataInterface.drives!.sortedArray(using: [NSSortDescriptor(key: "master", ascending: false)]) as! [Drive]
                 
                 //add second address
                 configString += "ioaddr1=0x1f0, ioaddr2=0x3f0, "
@@ -261,7 +261,7 @@ class EmulatorViewController: UIViewController {
                     }
                     
                     // path and info
-                    let driveFilePath = documentsURL!.URLByAppendingPathComponent(drive.fileName)!.path!
+                    let driveFilePath = documentsURL!.appendingPathComponent(drive.fileName).path
                     
                     if driveType != "floppy" {
                         configString += "ata\(ataInterface.id)-\(driveMasterString!): type=\(driveType!), path=\"\(driveFilePath)\""
@@ -329,7 +329,7 @@ class EmulatorViewController: UIViewController {
         
         if configuration.soundBlaster16.boolValue {
             
-            configString += "sb16: enabled = 1, midimode=1, wavemode=1, dmatimer=\(configuration.dmaTimer.integerValue)" + "\n"
+            configString += "sb16: enabled = 1, midimode=1, wavemode=1, dmatimer=\(configuration.dmaTimer.intValue)" + "\n"
         }
         
         //ENABLE THE NETWORK
@@ -338,7 +338,7 @@ class EmulatorViewController: UIViewController {
         }
         
         configString += "floppy_bootsig_check: disabled=1" + "\n"
-        configString += "vga: extension=\(configuration.vgaExtension), update_freq=\(configuration.vgaUpdateInterval.integerValue)" + "\n"
+        configString += "vga: extension=\(configuration.vgaExtension), update_freq=\(configuration.vgaUpdateInterval.intValue)" + "\n"
         
         configString += "voodoo: enabled=1, model=voodoo1" + "\n"
         
@@ -352,33 +352,33 @@ class EmulatorViewController: UIViewController {
         configString += "error: action=report" + "\n"
         configString += "info: action=report" + "\n"
         configString += "debug: action=ignore" + "\n"
-        configString += "keyboard: type=mf, keymap=0, serial_delay=\(configuration.keyboardSerialDelay.integerValue), paste_delay=\(configuration.keyboardPasteDelay.integerValue)" + "\n"
+        configString += "keyboard: type=mf, keymap=0, serial_delay=\(configuration.keyboardSerialDelay.intValue), paste_delay=\(configuration.keyboardPasteDelay.intValue)" + "\n"
         configString += "user_shortcut: keys=none" + "\n"
         
         // add bios file paths
         
-        let bochsKitBundle = NSBundle(identifier: "com.bochs.BochsKit")!
+        let bochsKitBundle = Bundle(identifier: "com.bochs.BochsKit")!
         
-        let biosPath = bochsKitBundle.URLForResource("BIOS-bochs-latest", withExtension: nil)!.path!
+        let biosPath = bochsKitBundle.url(forResource: "BIOS-bochs-latest", withExtension: nil)!.path
         
-        let vgaBiosPath = (configuration.vgaExtension == "cirrus") ? bochsKitBundle.URLForResource("VGABIOS-lgpl-latest-cirrus", withExtension: nil)!.path! : bochsKitBundle.URLForResource("VGABIOS-lgpl-latest", withExtension: nil)!.path!
+        let vgaBiosPath = (configuration.vgaExtension == "cirrus") ? bochsKitBundle.url(forResource: "VGABIOS-lgpl-latest-cirrus", withExtension: nil)!.path : bochsKitBundle.url(forResource: "VGABIOS-lgpl-latest", withExtension: nil)!.path
         
         configString += "romimage: file=\"\(biosPath)\", address=0x00000 \nvgaromimage: file=\"\(vgaBiosPath)\""
         
-        let path = (NSURL.fileURLWithPath(NSTemporaryDirectory(), isDirectory: true)).URLByAppendingPathComponent("os")!.URLByAppendingPathExtension("ini")
+        let path = (URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)).appendingPathComponent("os").appendingPathExtension("ini")
         
         print("Writing temporary configuration file:\n\(configString)")
         
         // write to disc
         var error: NSError?
         do {
-            try configString.writeToFile((path?.path)!, atomically: true, encoding: NSUTF8StringEncoding)
-        } catch var error1 as NSError {
+            try configString.write(toFile: (path.path), atomically: true, encoding: String.Encoding.utf8)
+        } catch let error1 as NSError {
             error = error1
         }
         
         assert(error == nil, "Could not write temporary configuration file to disk. (\(error!.localizedDescription))")
         
-        return (path?.path)!
+        return (path.path)
     }
 }

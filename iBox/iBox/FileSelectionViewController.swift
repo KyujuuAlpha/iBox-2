@@ -12,7 +12,7 @@ import UIKit
 import BochsKit
 import MBProgressHUD
 
-private let documentsURL = NSFileManager.defaultManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first! as NSURL
+private let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first! as URL
 
 class FileSelectionViewController: UITableViewController {
     
@@ -22,7 +22,7 @@ class FileSelectionViewController: UITableViewController {
     
     // MARK: - Private Properties
     
-    private var files = [String]()
+    fileprivate var files = [String]()
     
     // MARK: - Initialization
     
@@ -34,17 +34,17 @@ class FileSelectionViewController: UITableViewController {
     
     // MARK: - Actions
     
-    @IBAction func refresh(sender: AnyObject) {
-        var URLs:[NSURL] = []
+    @IBAction func refresh(_ sender: AnyObject) {
+        var URLs:[URL] = []
         do{
-            URLs = try NSFileManager.defaultManager().contentsOfDirectoryAtURL(documentsURL, includingPropertiesForKeys: nil, options: [NSDirectoryEnumerationOptions.SkipsHiddenFiles,NSDirectoryEnumerationOptions.SkipsPackageDescendants,NSDirectoryEnumerationOptions.SkipsSubdirectoryDescendants] as NSDirectoryEnumerationOptions) as [NSURL]
+            URLs = try FileManager.default.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil, options: [FileManager.DirectoryEnumerationOptions.skipsHiddenFiles,FileManager.DirectoryEnumerationOptions.skipsPackageDescendants,FileManager.DirectoryEnumerationOptions.skipsSubdirectoryDescendants] as FileManager.DirectoryEnumerationOptions) as [URL]
         }catch{
         }
         var fileNames = [String]()
         
         for url in URLs {
             
-            fileNames.append(url.lastPathComponent!)
+            fileNames.append(url.lastPathComponent)
         }
         
         self.files = fileNames
@@ -52,42 +52,42 @@ class FileSelectionViewController: UITableViewController {
         self.tableView.reloadData()
     }
     
-    @IBAction func createNewImage(sender: AnyObject) {
+    @IBAction func createNewImage(_ sender: AnyObject) {
         
         // create alert controller
         let alertController = UIAlertController(title: NSLocalizedString("Create New HDD Image", comment: "Create New HDD Image Alert Controller Title"),
             message: NSLocalizedString("Specify a size (in MB) and a name", comment: "Create New HDD Image Alert Controller Message"),
-            preferredStyle: UIAlertControllerStyle.Alert)
+            preferredStyle: UIAlertControllerStyle.alert)
         
         // add text fields
-        alertController.addTextFieldWithConfigurationHandler { (textField: UITextField!) -> Void in
+        alertController.addTextField { (textField: UITextField!) -> Void in
             
             textField.text = "hddImage"
         }
         
-        alertController.addTextFieldWithConfigurationHandler { (textField: UITextField!) -> Void in
+        alertController.addTextField { (textField: UITextField!) -> Void in
             
             textField.text = "100"
         }
         
         // add create and cancel button
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.Cancel, handler: { (action: UIAlertAction!) -> Void in
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.cancel, handler: { (action: UIAlertAction!) -> Void in
             
-            alertController.dismissViewControllerAnimated(true, completion: nil)
+            alertController.dismiss(animated: true, completion: nil)
         }))
         
-        alertController.addAction(UIAlertAction(title: NSLocalizedString("Create", comment: "Create"), style: UIAlertActionStyle.Default, handler: { (action: UIAlertAction!) -> Void in
+        alertController.addAction(UIAlertAction(title: NSLocalizedString("Create", comment: "Create"), style: UIAlertActionStyle.default, handler: { (action: UIAlertAction!) -> Void in
             
             // TODO: should probably validate file name (e.g. no spaces or invalid characters) and size text
             
             // dismiss alert controller and show progress view
-            alertController.dismissViewControllerAnimated(true, completion: nil)
+            alertController.dismiss(animated: true, completion: nil)
             
-            let progressHUD = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
-            self.tableView.userInteractionEnabled = false
+            let progressHUD = MBProgressHUD.showAdded(to: self.view, animated: true)
+            self.tableView.isUserInteractionEnabled = false
             
             // configure HUD
-            progressHUD.labelText = NSLocalizedString("Creating image...", comment: "'Creating image...' Progress HUD text")
+            progressHUD?.labelText = NSLocalizedString("Creating image...", comment: "'Creating image...' Progress HUD text")
             
             // create image...
             
@@ -95,28 +95,28 @@ class FileSelectionViewController: UITableViewController {
             
             let fileName = textField!.text! + ".img"
             
-            let fileURL = documentsURL.URLByAppendingPathComponent(fileName)
+            let fileURL = documentsURL.appendingPathComponent(fileName)
             
             let size = Int((alertController.textFields![1] as UITextField).text!)!
             
-            BXImage.createImageWithURL(fileURL, sizeInMB: UInt(size), completion: { (success: Bool) -> Void in
+            BXImage.createImage(with: fileURL, sizeInMB: UInt(size), completion: { (success: Bool) -> Void in
                 
-                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                OperationQueue.main.addOperation({ () -> Void in
                     
                     if !success {
                         
                         // hide progress HUD and show alert view
-                        MBProgressHUD.hideHUDForView(self.view, animated: true)
+                        MBProgressHUD.hide(for: self.view, animated: true)
                         
-                        self.tableView.userInteractionEnabled = true
+                        self.tableView.isUserInteractionEnabled = true
                         
                         let alertView = UIAlertController(title: NSLocalizedString("Error", comment: "Error"),
                             message: NSLocalizedString("Could not create the image", comment: "Could not create the image"),
-                            preferredStyle: UIAlertControllerStyle.Alert)
+                            preferredStyle: UIAlertControllerStyle.alert)
                         
-                        alertView.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.Cancel, handler: { (action: UIAlertAction!) -> Void in
+                        alertView.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel"), style: UIAlertActionStyle.cancel, handler: { (action: UIAlertAction!) -> Void in
                             
-                            alertView.dismissViewControllerAnimated(true, completion: nil)
+                            alertView.dismiss(animated: true, completion: nil)
                         }))
                         
                         return
@@ -124,11 +124,11 @@ class FileSelectionViewController: UITableViewController {
                     
                     // highlight file name row for existing file if the file already exists...
                     
-                    if (self.files as NSArray).containsObject(fileName) {
+                    if (self.files as NSArray).contains(fileName) {
                         
-                        let existingRowIndex = (self.files as NSArray).indexOfObject(fileURL!)
+                        let existingRowIndex = (self.files as NSArray).index(of: fileURL)
                         
-                        let cell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: existingRowIndex, inSection: 0))
+                        let cell = self.tableView.cellForRow(at: IndexPath(row: existingRowIndex, section: 0))
                         
                         cell?.setSelected(true, animated: true)
                     }
@@ -136,10 +136,10 @@ class FileSelectionViewController: UITableViewController {
                     else {
                         
                         self.files.append(fileName)
-                        self.files = (self.files as NSArray).sortedArrayUsingSelector("compare:") as!
+                        self.files = (self.files as NSArray).sortedArray(using: #selector(NSNumber.compare(_:))) as!
                             [String]
-                        let index = self.files.indexOf(fileName)!
-                        self.tableView.insertRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                        let index = self.files.index(of: fileName)!
+                        self.tableView.insertRows(at: [IndexPath(row: index, section: 0)], with: UITableViewRowAnimation.automatic)
                     }
                     
                     // save values
@@ -150,22 +150,22 @@ class FileSelectionViewController: UITableViewController {
                     
                     (self.drive as! HardDiskDrive).sectorsPerTrack = 63
                     
-                    (self.drive as! HardDiskDrive).cylinders = BXImage.numberOfCylindersForImageWithSizeInMB(UInt(size))
+                    (self.drive as! HardDiskDrive).cylinders = NSNumber(value: BXImage.numberOfCylindersForImageWithSize(inMB: UInt(size)))
                     
                     // perform segue and hide HUD after delay (segue will modify entity)
                     
                     let delayInSeconds = 2
-                    let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, (Int64(delayInSeconds) * Int64(NSEC_PER_SEC)))
+                    let dispatchTime = DispatchTime.now() + Double((Int64(delayInSeconds) * Int64(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
                     
-                    dispatch_after(dispatchTime, dispatch_get_main_queue(), {
+                    DispatchQueue.main.asyncAfter(deadline: dispatchTime, execute: {
                         
-                        self.tableView.userInteractionEnabled = true
+                        self.tableView.isUserInteractionEnabled = true
                         
                         // hide progress HUD
-                        MBProgressHUD.hideAllHUDsForView(self.view, animated: true)
+                        MBProgressHUD.hideAllHUDs(for: self.view, animated: true)
                         
                         // perform segue
-                        self.performSegueWithIdentifier("unwindFromNewHDDImageSegue", sender: self)
+                        self.performSegue(withIdentifier: "unwindFromNewHDDImageSegue", sender: self)
                         
                         return
                     })
@@ -175,24 +175,24 @@ class FileSelectionViewController: UITableViewController {
         }))
         
         // show
-        self.presentViewController(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: nil)
     }
     
     // MARK: - UITableViewDataSource
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return self.files.count
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(TableViewCellReusableIdentifier.FileNameCell.rawValue, forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: TableViewCellReusableIdentifier.FileNameCell.rawValue, for: indexPath) as UITableViewCell
         
         // get model object
         let file = self.files[indexPath.row]
@@ -205,20 +205,19 @@ class FileSelectionViewController: UITableViewController {
     
     // MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
         // get file
         let fileName = self.files[indexPath.row]
         
-        let fileURL = documentsURL.URLByAppendingPathComponent(fileName)
+        let fileURL = documentsURL.appendingPathComponent(fileName)
         
         switch editingStyle {
             
-        case .Delete:
+        case .delete:
             
-            let error: NSError?
             do{
-                try NSFileManager.defaultManager().removeItemAtURL(fileURL!)
+                try FileManager.default.removeItem(at: fileURL)
             }catch{}
             /*
             if error != nil {
@@ -236,11 +235,11 @@ class FileSelectionViewController: UITableViewController {
             }
             */
             // update table view data source
-            self.files.removeAtIndex(indexPath.row)
+            self.files.remove(at: indexPath.row)
             
             // remove table view cell row with animation
             tableView.beginUpdates()
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+            tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic)
             tableView.endUpdates()
             
         default:
@@ -250,7 +249,7 @@ class FileSelectionViewController: UITableViewController {
     
     // MARK: - Segues
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "unwindFromFileSelectionSegue" {
             
@@ -258,7 +257,7 @@ class FileSelectionViewController: UITableViewController {
             
             let cell = sender as! UITableViewCell
             
-            self.drive?.fileName = self.files[self.tableView.indexPathForCell(cell)!.row]
+            self.drive?.fileName = self.files[self.tableView.indexPath(for: cell)!.row]
         }
         
     }

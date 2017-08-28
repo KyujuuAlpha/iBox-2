@@ -8,6 +8,30 @@
 
 import UIKit
 import CoreData
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 internal let maxATAInterfacesPerConfiguration = ((Store.sharedInstance.managedObjectContext.persistentStoreCoordinator!.managedObjectModel.entitiesByName["Configuration"] as NSEntityDescription?)!.relationshipsByName["ataInterfaces"] as NSRelationshipDescription?)!.maxCount
 
@@ -20,7 +44,7 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
     var configuration: Configuration? {
         didSet {
             
-            if configuration != nil && self.isViewLoaded() {
+            if configuration != nil && self.isViewLoaded {
                 
                 // create fetched results controller
                 self.fetchedResultsController = self.fetchedResultsControllerForConfiguration(self.configuration!)
@@ -36,7 +60,7 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
     
     // MARK: - Private Properties
     
-    private var fetchedResultsController: NSFetchedResultsController?
+    fileprivate var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     
     // MARK: - Loading
     
@@ -44,7 +68,7 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
         super.viewDidLoad()
         
         // register section header nib
-        self.tableView.registerNib(UINib(nibName: "ATAInterfaceTableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "ATAInterfaceTableViewHeaderView")
+        self.tableView.register(UINib(nibName: "ATAInterfaceTableViewHeaderView", bundle: nil), forHeaderFooterViewReuseIdentifier: "ATAInterfaceTableViewHeaderView")
         
         if self.configuration != nil {
             
@@ -61,7 +85,7 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
     
     // MARK: - Actions
     
-    func irqStepperValueDidChange(sender: UIStepper) {
+    func irqStepperValueDidChange(_ sender: UIStepper) {
         
         // get model object
         let sectionInfo = self.fetchedResultsController!.sections![sender.tag] as NSFetchedResultsSectionInfo
@@ -71,21 +95,21 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
         let ataInterface = drive.ataInterface
         
         // set model object
-        ataInterface.irq = Int(sender.value)
+        ataInterface.irq = NSNumber(value: Int(sender.value))
         
         // get header view
-        let headerView = self.tableView.headerViewForSection(sender.tag) as! ATAInterfaceTableViewHeaderView
+        let headerView = self.tableView.headerView(forSection: sender.tag) as! ATAInterfaceTableViewHeaderView
         
         // set up header view
-        headerView.irqLabel.text = NSLocalizedString("IRQ", comment: "IRQ") + " \(ataInterface.irq.integerValue)"
+        headerView.irqLabel.text = NSLocalizedString("IRQ", comment: "IRQ") + " \(ataInterface.irq.intValue)"
     }
     
     // MARK: - Private Methods
     
-    private func fetchedResultsControllerForConfiguration(configuration: Configuration) -> NSFetchedResultsController {
+    fileprivate func fetchedResultsControllerForConfiguration(_ configuration: Configuration) -> NSFetchedResultsController<NSFetchRequestResult> {
         
         // create fetch request
-        let fetchRequest = NSFetchRequest(entityName: "Drive");
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Drive");
         
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "ataInterface.id", ascending: true), NSSortDescriptor(key: "master", ascending: false)]
         
@@ -99,10 +123,10 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
         return fetchedResultsController
     }
     
-    private func configureCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
+    fileprivate func configureCell(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
         
         // get model object
-        let drive = self.fetchedResultsController?.objectAtIndexPath(indexPath) as! Drive
+        let drive = self.fetchedResultsController?.object(at: indexPath) as! Drive
         
         // set type label
         if drive.master.boolValue {
@@ -124,7 +148,7 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
         }
     }
     
-    private func canCreateNewDrive() -> Bool {
+    fileprivate func canCreateNewDrive() -> Bool {
         
         if self.configuration!.ataInterfaces?.count > 0 {
             
@@ -138,25 +162,25 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
             
             // find latest ATA interface
             
-            let fetchRequest = NSFetchRequest(entityName: "ATAInterface")
+            let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "ATAInterface")
             fetchRequest.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
             fetchRequest.predicate = NSPredicate(format: "configuration == %@", self.configuration!)
             
             var fetchError: NSError?
             let fetchResult: [AnyObject]?
             do {
-                fetchResult = try Store.sharedInstance.managedObjectContext.executeFetchRequest(fetchRequest)
-            } catch var error as NSError {
+                fetchResult = try Store.sharedInstance.managedObjectContext.fetch(fetchRequest)
+            } catch let error as NSError {
                 fetchError = error
                 fetchResult = nil
             }
             
-            assert(fetchError == nil, "Error occurred while fetching from store. (\(fetchError?.localizedDescription))")
+            assert(fetchError == nil, "Error occurred while fetching from store. (\(fetchError?.localizedDescription ?? "nil"))")
             
             let newestATAInterface = fetchResult!.last as! ATAInterface
             
             // max number of interfaces and drives
-            if newestATAInterface.id == maxATAInterfacesPerConfiguration - 1 && newestATAInterface.drives?.count == maxDrivesPerATAInterface {
+            if newestATAInterface.id == NSNumber(value: maxATAInterfacesPerConfiguration - 1) && newestATAInterface.drives?.count == maxDrivesPerATAInterface {
                 
                 return false
             }
@@ -167,14 +191,14 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
     
     // MARK: - UITableViewDataSource
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         
         if let numberOfSections = self.fetchedResultsController?.sections?.count {
             
             // conditionaly enable add button
-            if let addButton = self.navigationItem.rightBarButtonItem {
+            if self.navigationItem.rightBarButtonItem != nil {
                 
-                self.navigationItem.rightBarButtonItem?.enabled = self.canCreateNewDrive()
+                self.navigationItem.rightBarButtonItem?.isEnabled = self.canCreateNewDrive()
             }
             
             // return number of section
@@ -184,18 +208,18 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
         return 0
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         let sectionInfo = self.fetchedResultsController!.sections![section] as NSFetchedResultsSectionInfo
         
         return sectionInfo.numberOfObjects
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let DriveCellIdentifier = "DriveCell"
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(DriveCellIdentifier, forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: DriveCellIdentifier, for: indexPath) as UITableViewCell
         
         self.configureCell(cell, atIndexPath: indexPath)
         
@@ -204,9 +228,9 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
     
     // MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-        let headerView = tableView.dequeueReusableHeaderFooterViewWithIdentifier("ATAInterfaceTableViewHeaderView") as! ATAInterfaceTableViewHeaderView
+        let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "ATAInterfaceTableViewHeaderView") as! ATAInterfaceTableViewHeaderView
         
         // get model object
         let sectionInfo = self.fetchedResultsController!.sections![section] as NSFetchedResultsSectionInfo
@@ -215,81 +239,81 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
         let ataInterface = drive.ataInterface;
         
         // configure header view
-        headerView.ataLabel.text = NSLocalizedString("ATA Interface", comment: "ATA Interface") + " \(ataInterface.id.integerValue)"
-        headerView.irqLabel.text = NSLocalizedString("IRQ", comment: "IRQ") + " \(ataInterface.irq.integerValue)"
+        headerView.ataLabel.text = NSLocalizedString("ATA Interface", comment: "ATA Interface") + " \(ataInterface.id.intValue)"
+        headerView.irqLabel.text = NSLocalizedString("IRQ", comment: "IRQ") + " \(ataInterface.irq.intValue)"
         headerView.irqStepper.value = ataInterface.irq.doubleValue
-        headerView.irqStepper.addTarget(self, action: "irqStepperValueDidChange:", forControlEvents: UIControlEvents.ValueChanged)
+        headerView.irqStepper.addTarget(self, action: #selector(DrivesViewController.irqStepperValueDidChange(_:)), for: UIControlEvents.valueChanged)
         headerView.irqStepper.tag = section
         
         return headerView
     }
     
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
-        if editingStyle == UITableViewCellEditingStyle.Delete {
+        if editingStyle == UITableViewCellEditingStyle.delete {
             
             // get the model object
-            let drive = self.fetchedResultsController!.objectAtIndexPath(indexPath) as! Drive
+            let drive = self.fetchedResultsController!.object(at: indexPath) as! Drive
             let ataInterface = drive.ataInterface
             
             // delete drive
-            Store.sharedInstance.managedObjectContext.deleteObject(drive)
+            Store.sharedInstance.managedObjectContext.delete(drive)
             
             // also delete ATA interface if it is empty or deleted drive is master...
             
             if ataInterface.drives!.count == 0 || drive.master.boolValue {
                 
-                Store.sharedInstance.managedObjectContext.deleteObject(ataInterface)
+                Store.sharedInstance.managedObjectContext.delete(ataInterface)
             }
 
         }
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
         return 95
     }
     
     // MARK: - NSFetchedResultsController
     
-    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         self.tableView.beginUpdates()
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         switch type {
-        case .Insert:
-            self.tableView.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
-        case .Delete:
-            self.tableView.deleteSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+        case .insert:
+            self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .delete:
+            self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
         default:
             return
         }
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
-        case .Insert:
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
-        case .Delete:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
-        case .Update:
-            self.configureCell(tableView.cellForRowAtIndexPath(indexPath!)!, atIndexPath: indexPath!)
-        case .Move:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
+        case .insert:
+            tableView.insertRows(at: [newIndexPath!], with: UITableViewRowAnimation.fade)
+        case .delete:
+            tableView.deleteRows(at: [indexPath!], with: UITableViewRowAnimation.fade)
+        case .update:
+            self.configureCell(tableView.cellForRow(at: indexPath!)!, atIndexPath: indexPath!)
+        case .move:
+            tableView.deleteRows(at: [indexPath!], with: UITableViewRowAnimation.fade)
+            tableView.insertRows(at: [newIndexPath!], with: UITableViewRowAnimation.fade)
         default:
             return
         }
     }
     
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         self.tableView.endUpdates()
     }
     
     // MARK: - Segues
     
-    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         
         if identifier == "newDriveSegue" {
             
@@ -299,12 +323,12 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
         return true
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "newDriveSegue" {
             
             // get VC
-            let newDriveVC = (segue.destinationViewController as! UINavigationController).viewControllers.first as! NewDriveViewController
+            let newDriveVC = (segue.destination as! UINavigationController).viewControllers.first as! NewDriveViewController
             
             // set model object on VC
             newDriveVC.configuration = self.configuration!
@@ -313,10 +337,10 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
         if segue.identifier == "editDriveSegue" {
             
             // get selected drive
-            let selectedDrive = self.fetchedResultsController!.objectAtIndexPath(self.tableView.indexPathForSelectedRow!) as! Drive
+            let selectedDrive = self.fetchedResultsController!.object(at: self.tableView.indexPathForSelectedRow!) as! Drive
             
             // set model object on VC
-            let driveEditorVC = segue.destinationViewController as! DriveEditorViewController
+            let driveEditorVC = segue.destination as! DriveEditorViewController
             
             driveEditorVC.drive = selectedDrive
             
@@ -325,7 +349,7 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
         }
     }
     
-    @IBAction func unwindFromNewHDDImage(segue: UIStoryboardSegue) { }
+    @IBAction func unwindFromNewHDDImage(_ segue: UIStoryboardSegue) { }
     
 }
 
