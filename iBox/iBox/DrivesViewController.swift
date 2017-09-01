@@ -302,8 +302,6 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
         case .move:
             tableView.deleteRows(at: [indexPath!], with: UITableViewRowAnimation.fade)
             tableView.insertRows(at: [newIndexPath!], with: UITableViewRowAnimation.fade)
-        default:
-            return
         }
     }
     

@@ -2277,7 +2277,7 @@
 		6ECAC6FC19FF107400D94D6C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = Bochs;
 				TargetAttributes = {
 					6ECAC70419FF107400D94D6C = {
@@ -2699,11 +2699,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					"armv7,",
-					"armv7s,",
-					arm64,
-				);
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_MODULES = YES;
@@ -2757,11 +2752,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					"armv7,",
-					"armv7s,",
-					arm64,
-				);
 				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
 				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_MODULES = YES;

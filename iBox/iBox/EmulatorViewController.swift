@@ -22,6 +22,7 @@ class EmulatorViewController: UIViewController {
     
     // MARK: - Properties
     
+    var isKeyboardHide = false
     var configuration: Configuration?
     var generator: UISelectionFeedbackGenerator?
     var generator2: UINotificationFeedbackGenerator?
@@ -53,13 +54,13 @@ class EmulatorViewController: UIViewController {
         super.viewDidAppear(animated)
         
         // hide navigation bar
-        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     // MARK: - View Layout
     
     override func viewDidLayoutSubviews() {
-        
+        isKeyboardHide = false
         BXRenderView.sharedInstance().frame = self.renderContainerView.frame
     }
     
@@ -67,11 +68,14 @@ class EmulatorViewController: UIViewController {
     @IBOutlet weak var keyboardContainer: UIView!
     
     override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) { //temporary "hide"
-        var newFrame: CGRect = BXRenderView.sharedInstance().frame
-        newFrame.size.height += keyboardContainer.frame.size.height
-        BXRenderView.sharedInstance().frame = newFrame
-        BXRenderView.sharedInstance().rescaleFrame()
-        generator2?.notificationOccurred(.success)
+        if !isKeyboardHide {
+            var newFrame: CGRect = BXRenderView.sharedInstance().frame
+            newFrame.size.height += keyboardContainer.frame.size.width * 1.5
+            isKeyboardHide = true
+            BXRenderView.sharedInstance().frame = newFrame
+            BXRenderView.sharedInstance().rescaleFrame()
+            generator2?.notificationOccurred(.success)
+        }
     }
     
     // MARK: - Methods

@@ -188,7 +188,7 @@ static NSDate *date = [NSDate date];
 		imageContext = CGBitmapContextCreate(imageData, sz.width, sz.height, 8, sz.width*4, CGColorSpaceCreateDeviceRGB(), kCGImageAlphaNoneSkipLast);
 	}
 	
-	CGContextSetRGBFillColor(imageContext, 0.5f, 0.5f, 0.5f, 1.0f);
+	CGContextSetRGBFillColor(imageContext, 0.0f, 0.0f, 0.0f, 1.0f);
 	CGContextFillRect(imageContext, CGRectMake(0, 0, sz.width, sz.height));
     
     bpr = sz.width*4;
@@ -336,7 +336,7 @@ void addToEventBuffer(int isMouse, int x, int y, int button)
                                                  NSForegroundColorAttributeName: [UIColor whiteColor]};
 				
                 if(averageWidth == 0) {
-                    averageHeight = (fwidth / 60) / 0.63; //60 char width for now, (too small on some displays)
+                    averageHeight = (fwidth / 80) / 0.63; //60 char width for now, (too small on some displays)
                     averageWidth = averageHeight * 0.63;
                 } else {
                     for (int y = 0; y < 25; y++)
