@@ -8,7 +8,7 @@ Changes:
 * Updated to Bochs 2.6.8
 * **Clunky** on-screen keyboard
    * NOTE: Shift is toggle, ~~visual indicator is planned~~
-   * Shake to hide, rotate device to show <-- TEMPORARY
+* Shake to hide keyboard, shake again to show
 * SDL 2.0 sound support
 * Networking in Beta stages
 * Support for up to 2GB RAM allocation
