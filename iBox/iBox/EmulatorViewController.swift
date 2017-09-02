@@ -21,8 +21,7 @@ class EmulatorViewController: UIViewController {
     @IBOutlet weak var extrasContainerView: UIView!
     
     // MARK: - Properties
-    
-    var isKeyboardHide = false
+
     var configuration: Configuration?
     var generator: UISelectionFeedbackGenerator?
     var generator2: UINotificationFeedbackGenerator?
@@ -65,8 +64,9 @@ class EmulatorViewController: UIViewController {
     }
     
     override func viewDidLayoutSubviews() {
-        isKeyboardHide = false
+        keyboardContainer.isHidden = false
         BXRenderView.sharedInstance().frame = self.renderContainerView.frame
+        BXRenderView.sharedInstance().frame.origin.x = 0
         if view.frame.width < view.frame.height {
             BXRenderView.sharedInstance().frame.size.height = renderContainerView.frame.size.width / 1.5
         }
@@ -77,24 +77,26 @@ class EmulatorViewController: UIViewController {
     @IBOutlet weak var keyboardContainer: UIView!
     
     override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) { //temporary "hide"
-        if !isKeyboardHide {
+        if !keyboardContainer.isHidden && view.frame.width > view.frame.height{
             var newFrame: CGRect = BXRenderView.sharedInstance().frame
             if renderContainerView.frame.size.width / 1.5 > view.frame.height {
                 newFrame.size.height = view.frame.height
             } else {
                 newFrame.size.height = renderContainerView.frame.size.width / 1.5
             }
-            isKeyboardHide = true
+            newFrame.origin.y = (view.frame.height - newFrame.height) / 2
+            keyboardContainer.isHidden = true
             BXRenderView.sharedInstance().frame = newFrame
             BXRenderView.sharedInstance().rescaleFrame()
             generator2?.notificationOccurred(.success)
         } else {
-            isKeyboardHide = false
+            keyboardContainer.isHidden = false
             BXRenderView.sharedInstance().frame = self.renderContainerView.frame
             if view.frame.width < view.frame.height {
                 BXRenderView.sharedInstance().frame.size.height = renderContainerView.frame.size.width / 1.5
             }
             BXRenderView.sharedInstance().rescaleFrame()
+            BXRenderView.sharedInstance().frame.origin.x = 0
         }
     }
     

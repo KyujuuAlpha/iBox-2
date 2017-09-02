@@ -42,22 +42,22 @@ typedef int (*WRITE_IMAGE)(FILE*, Bit64u);
 typedef int (*WRITE_IMAGE_WIN32)(HANDLE, Bit64u);
 #endif
 
-char *EOF_ERR = "ERROR: End of input";
+const char *EOF_ERR = "ERROR: End of input";
 char *rcsid = "$Id: bximage.c,v 1.34 2009/04/14 09:45:22 sshwarts Exp $";
-char *divider = "========================================================================";
+const char *divider = "========================================================================";
 
 /* menu data for choosing floppy/hard disk */
-char *fdhd_menu = "\nDo you want to create a floppy disk image or a hard disk image?\nPlease type hd or fd. ";
+const char *fdhd_menu = "\nDo you want to create a floppy disk image or a hard disk image?\nPlease type hd or fd. ";
 char *fdhd_choices[] = { "fd", "hd" };
 int fdhd_n_choices = 2;
 
 /* menu data for choosing floppy size */
-char *fdsize_menu = "\nChoose the size of floppy disk image to create, in megabytes.\nPlease type 0.16, 0.18, 0.32, 0.36, 0.72, 1.2, 1.44, 1.68, 1.72, or 2.88.\n ";
+const char *fdsize_menu = "\nChoose the size of floppy disk image to create, in megabytes.\nPlease type 0.16, 0.18, 0.32, 0.36, 0.72, 1.2, 1.44, 1.68, 1.72, or 2.88.\n ";
 char *fdsize_choices[] = { "0.16","0.18","0.32","0.36","0.72","1.2","1.44","1.68","1.72","2.88" };
 int fdsize_n_choices = 10;
 
 /* menu data for choosing disk mode */
-char *hdmode_menu = "\nWhat kind of image should I create?\nPlease type flat, sparse or growing. ";
+const char *hdmode_menu = "\nWhat kind of image should I create?\nPlease type flat, sparse or growing. ";
 char *hdmode_choices[] = {"flat", "sparse", "growing" };
 int hdmode_n_choices = 3;
 

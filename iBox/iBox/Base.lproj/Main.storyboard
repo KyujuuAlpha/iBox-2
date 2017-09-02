@@ -81,13 +81,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JJN-Jr-Xlq">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <items>
-                                    <barButtonItem title="Item" id="7Op-V5-ega"/>
-                                </items>
-                            </toolbar>
                             <view multipleTouchEnabled="YES" contentMode="scaleAspectFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AzL-C1-Bzj">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="435"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -2108,19 +2101,11 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <toolbarItems>
-                        <barButtonItem style="plain" systemItem="action" id="YDT-rk-Cry"/>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="Pfr-nX-al0"/>
-                        <barButtonItem systemItem="compose" id="CSh-dK-wq4"/>
-                        <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="kfL-6q-fhY"/>
-                        <barButtonItem systemItem="stop" id="pTk-ql-iZy"/>
-                    </toolbarItems>
-                    <navigationItem key="navigationItem" id="UBA-XF-LD6">
-                        <nil key="title"/>
-                    </navigationItem>
+                    <toolbarItems/>
                     <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="etcBtn" destination="DSm-Pv-Ftx" id="HVN-GZ-TUt"/>
@@ -2140,7 +2125,7 @@
             <objects>
                 <navigationController id="1bZ-Lo-H3r" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="g90-fs-3Sr">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="tintColor" red="0.095955684781074524" green="0.53702324628829956" blue="0.9056401252746582" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </navigationBar>
@@ -2157,7 +2142,7 @@
             <objects>
                 <navigationController id="FFW-AK-Hjf" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="gjc-AX-7k3">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -2843,7 +2828,7 @@
             <objects>
                 <navigationController id="YHM-fm-0iT" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="uv3-k4-UVD">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
@@ -2911,7 +2896,7 @@
         <image name="delete.png" width="16" height="16"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="EhI-Uh-NhL"/>
         <segue reference="0aM-aP-L9e"/>
+        <segue reference="EhI-Uh-NhL"/>
     </inferredMetricsTieBreakers>
 </document>
