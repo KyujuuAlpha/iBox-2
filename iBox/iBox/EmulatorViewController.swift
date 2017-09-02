@@ -33,6 +33,8 @@ class EmulatorViewController: UIViewController {
         super.viewDidLoad()
         self.generator = UISelectionFeedbackGenerator()
         self.generator2 = UINotificationFeedbackGenerator()
+        let app = UIApplication.shared
+        app.isIdleTimerDisabled = true
         // add render view
         
         self.view.addSubview(BXRenderView.sharedInstance())
