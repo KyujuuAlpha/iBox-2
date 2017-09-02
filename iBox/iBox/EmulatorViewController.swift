@@ -67,8 +67,8 @@ class EmulatorViewController: UIViewController {
         BXRenderView.sharedInstance().frame = self.renderContainerView.frame
         if view.frame.width < view.frame.height {
             BXRenderView.sharedInstance().frame.size.height = renderContainerView.frame.size.width / 1.5
-            BXRenderView.sharedInstance().rescaleFrame()
         }
+        BXRenderView.sharedInstance().rescaleFrame()
     }
     
     
@@ -77,11 +77,22 @@ class EmulatorViewController: UIViewController {
     override func motionEnded(_ motion: UIEventSubtype, with event: UIEvent?) { //temporary "hide"
         if !isKeyboardHide {
             var newFrame: CGRect = BXRenderView.sharedInstance().frame
-            newFrame.size.height = renderContainerView.frame.size.width / 1.5
+            if renderContainerView.frame.size.width / 1.5 > view.frame.height {
+                newFrame.size.height = view.frame.height
+            } else {
+                newFrame.size.height = renderContainerView.frame.size.width / 1.5
+            }
             isKeyboardHide = true
             BXRenderView.sharedInstance().frame = newFrame
             BXRenderView.sharedInstance().rescaleFrame()
             generator2?.notificationOccurred(.success)
+        } else {
+            isKeyboardHide = false
+            BXRenderView.sharedInstance().frame = self.renderContainerView.frame
+            if view.frame.width < view.frame.height {
+                BXRenderView.sharedInstance().frame.size.height = renderContainerView.frame.size.width / 1.5
+            }
+            BXRenderView.sharedInstance().rescaleFrame()
         }
     }
     
