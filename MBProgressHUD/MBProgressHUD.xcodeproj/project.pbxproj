@@ -233,6 +233,7 @@
 				TargetAttributes = {
 					6E2DD8FC1A0F54B700774727 = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0830;
 					};
 					6E2DD9061A0F54B700774727 = {
 						CreatedOnToolsVersion = 6.1;
@@ -342,6 +343,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Bukovinski.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -375,6 +377,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.Bukovinski.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";

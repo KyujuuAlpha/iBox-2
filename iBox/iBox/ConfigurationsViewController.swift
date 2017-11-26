@@ -17,7 +17,7 @@ class ConfigurationsViewController: UITableViewController, UISearchBarDelegate, 
     
     // MARK: - Private Properties
     
-    private var fetchedResultsController: NSFetchedResultsController?
+    fileprivate var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
     
     // MARK: - Loading
     
@@ -33,7 +33,7 @@ class ConfigurationsViewController: UITableViewController, UISearchBarDelegate, 
         }
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         
         // clear search text
@@ -42,10 +42,10 @@ class ConfigurationsViewController: UITableViewController, UISearchBarDelegate, 
     
     // MARK: - Private Methods
     
-    private func fetchedResultsControllerForSearchText(searchText: String?) -> NSFetchedResultsController {
+    fileprivate func fetchedResultsControllerForSearchText(_ searchText: String?) -> NSFetchedResultsController<NSFetchRequestResult> {
         
         // create fetch request
-        let fetchRequest = NSFetchRequest(entityName: "Configuration");
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Configuration");
         
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
         
@@ -63,22 +63,22 @@ class ConfigurationsViewController: UITableViewController, UISearchBarDelegate, 
         return fetchedResultsController
     }
     
-    private func configureCell(cell: UITableViewCell, atIndexPath indexPath: NSIndexPath) {
+    fileprivate func configureCell(_ cell: UITableViewCell, atIndexPath indexPath: IndexPath) {
         
         // get model object
-        let configuration = self.fetchedResultsController?.objectAtIndexPath(indexPath) as! Configuration
+        let configuration = self.fetchedResultsController?.object(at: indexPath) as! Configuration
         
         cell.textLabel!.text = configuration.name;
     }
     
     // MARK: - UITableViewDataSource
     
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         
         return 1
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if let count = self.fetchedResultsController?.fetchedObjects?.count {
             
@@ -88,11 +88,11 @@ class ConfigurationsViewController: UITableViewController, UISearchBarDelegate, 
         return 0
     }
     
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let ConfigurationCellIdentier = "ConfigurationCell"
         
-        let cell = tableView.dequeueReusableCellWithIdentifier(ConfigurationCellIdentier, forIndexPath: indexPath) as UITableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: ConfigurationCellIdentier, for: indexPath) as UITableViewCell
         
         self.configureCell(cell, atIndexPath: indexPath)
         
@@ -101,13 +101,13 @@ class ConfigurationsViewController: UITableViewController, UISearchBarDelegate, 
     
     // MARK: - UITableViewDelegate
     
-    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         
         // get the model object
-        let configuration = self.fetchedResultsController?.objectAtIndexPath(indexPath) as! Configuration
+        let configuration = self.fetchedResultsController?.object(at: indexPath) as! Configuration
         
         // delete
-        Store.sharedInstance.managedObjectContext.deleteObject(configuration)
+        Store.sharedInstance.managedObjectContext.delete(configuration)
         
         // save
         
@@ -121,15 +121,15 @@ class ConfigurationsViewController: UITableViewController, UISearchBarDelegate, 
         
         if error != nil {
             
-            let alertController = UIAlertController(title: NSLocalizedString("Error", comment: "Error"), message: NSLocalizedString("Could not delete configuration.", comment: "Could not delete configuration.") + " \\(\(error!.localizedDescription)\\)", preferredStyle: UIAlertControllerStyle.Alert)
+            let alertController = UIAlertController(title: NSLocalizedString("Error", comment: "Error"), message: NSLocalizedString("Could not delete configuration.", comment: "Could not delete configuration.") + " \\(\(error!.localizedDescription)\\)", preferredStyle: UIAlertControllerStyle.alert)
             
-            self.presentViewController(alertController, animated: true, completion: nil)
+            self.present(alertController, animated: true, completion: nil)
         }
     }
     
     // MARK: - UISearchBarDelegate
     
-    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
         // update the fetched results controller
         self.fetchedResultsController = self.fetchedResultsControllerForSearchText(searchText);
@@ -144,52 +144,52 @@ class ConfigurationsViewController: UITableViewController, UISearchBarDelegate, 
     
     // MARK: - NSFetchedResultsController
     
-    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         self.tableView.beginUpdates()
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         switch type {
-        case .Insert:
-            self.tableView.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
-        case .Delete:
-            self.tableView.deleteSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+        case .insert:
+            self.tableView.insertSections(IndexSet(integer: sectionIndex), with: .fade)
+        case .delete:
+            self.tableView.deleteSections(IndexSet(integer: sectionIndex), with: .fade)
         default:
             return
         }
     }
     
-    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
-        case .Insert:
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
-        case .Delete:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
-        case .Update:
-            self.configureCell(tableView.cellForRowAtIndexPath(indexPath!)!, atIndexPath: indexPath!)
-        case .Move:
-            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
-            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: UITableViewRowAnimation.Fade)
+        case .insert:
+            tableView.insertRows(at: [newIndexPath!], with: UITableViewRowAnimation.fade)
+        case .delete:
+            tableView.deleteRows(at: [indexPath!], with: UITableViewRowAnimation.fade)
+        case .update:
+            self.configureCell(tableView.cellForRow(at: indexPath!)!, atIndexPath: indexPath!)
+        case .move:
+            tableView.deleteRows(at: [indexPath!], with: UITableViewRowAnimation.fade)
+            tableView.insertRows(at: [newIndexPath!], with: UITableViewRowAnimation.fade)
         default:
             return
         }
     }
     
-    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         self.tableView.endUpdates()
     }
     
     // MARK: - Segues
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "newConfigurationSegue" {
             
             // create new configuration
             
-            let newConfiguration = NSEntityDescription.insertNewObjectForEntityForName("Configuration", inManagedObjectContext: Store.sharedInstance.managedObjectContext) as! Configuration
+            let newConfiguration = NSEntityDescription.insertNewObject(forEntityName: "Configuration", into: Store.sharedInstance.managedObjectContext) as! Configuration
             
-            let configurationEditorVC = (segue.destinationViewController as! UINavigationController).viewControllers.first as! ConfigurationEditorViewController
+            let configurationEditorVC = (segue.destination as! UINavigationController).viewControllers.first as! ConfigurationEditorViewController
             
             configurationEditorVC.configuration = newConfiguration
         }
@@ -198,9 +198,9 @@ class ConfigurationsViewController: UITableViewController, UISearchBarDelegate, 
             
             // edit configuration
             
-            let configuration = self.fetchedResultsController?.objectAtIndexPath(self.tableView.indexPathForCell(sender as! UITableViewCell)!) as! Configuration
+            let configuration = self.fetchedResultsController?.object(at: self.tableView.indexPath(for: sender as! UITableViewCell)!) as! Configuration
             
-            let configurationEditorVC = (segue.destinationViewController as! UINavigationController).viewControllers.first as! ConfigurationEditorViewController
+            let configurationEditorVC = (segue.destination as! UINavigationController).viewControllers.first as! ConfigurationEditorViewController
             
             configurationEditorVC.configuration = configuration
             
@@ -209,9 +209,9 @@ class ConfigurationsViewController: UITableViewController, UISearchBarDelegate, 
         if segue.identifier == "startEmulatorSegue" {
             
             // set emulator configuraion
-            let configuration = self.fetchedResultsController?.objectAtIndexPath(self.tableView.indexPathForCell(sender as! UITableViewCell)!) as! Configuration
+            let configuration = self.fetchedResultsController?.object(at: self.tableView.indexPath(for: sender as! UITableViewCell)!) as! Configuration
             
-            (segue.destinationViewController as! EmulatorViewController).configuration = configuration
+            (segue.destination as! EmulatorViewController).configuration = configuration
         }
     }
 }
