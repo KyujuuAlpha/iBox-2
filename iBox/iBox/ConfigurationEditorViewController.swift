@@ -50,7 +50,7 @@ class ConfigurationEditorViewController: UITableViewController {
     var configuration: Configuration? {
         didSet {
             
-            if configuration != nil && self.isViewLoaded() {
+            if configuration != nil && self.isViewLoaded {
                 
                 self.loadUI(forConfiguration: self.configuration!)
             }
@@ -70,7 +70,7 @@ class ConfigurationEditorViewController: UITableViewController {
         }
     }
     
-    private func loadUI(forConfiguration configuration: Configuration) {
+    fileprivate func loadUI(forConfiguration configuration: Configuration) {
         
         // setup UI with values from model object...
         
@@ -95,28 +95,28 @@ class ConfigurationEditorViewController: UITableViewController {
         default: self.vgaExtensionSegmentedControl.selectedSegmentIndex = 0
         }
         
-        vgaUpdateIntervalTextField.text = "\(configuration.vgaUpdateInterval.integerValue)"
+        vgaUpdateIntervalTextField.text = "\(configuration.vgaUpdateInterval.intValue)"
         
-        soundBlaster16Switch.on = configuration.soundBlaster16.boolValue
+        soundBlaster16Switch.isOn = configuration.soundBlaster16.boolValue
         
-        sdlSiwtch.on = configuration.sdlEnabled.boolValue
+        sdlSiwtch.isOn = configuration.sdlEnabled.boolValue
         
-        feedbackSwitch.on = configuration.feedbackEnabled.boolValue
+        feedbackSwitch.isOn = configuration.feedbackEnabled.boolValue
         
-        dmaTimerTextField.text = "\(configuration.dmaTimer.integerValue)"
+        dmaTimerTextField.text = "\(configuration.dmaTimer.intValue)"
         
-        keyBoardPasteDelayTextField.text = "\(configuration.keyboardPasteDelay.integerValue)"
+        keyBoardPasteDelayTextField.text = "\(configuration.keyboardPasteDelay.intValue)"
         
-        keyboardSerialDelayTextField.text = "\(configuration.keyboardSerialDelay.integerValue)"
+        keyboardSerialDelayTextField.text = "\(configuration.keyboardSerialDelay.intValue)"
         
-        networkSwitch.on = configuration.networkEnabled.boolValue
+        networkSwitch.isOn = configuration.networkEnabled.boolValue
         
         macTextField.text = configuration.macAddress
     }
     
     // MARK: - Actions
     
-    @IBAction func save(sender: AnyObject) {
+    @IBAction func save(_ sender: AnyObject) {
         
         assert(self.configuration != nil)
         
@@ -133,7 +133,7 @@ class ConfigurationEditorViewController: UITableViewController {
         default: configuration.bootDevice = "cdrom"
         }
         
-        configuration.ramSize = UInt(self.ramSlider.value)
+        configuration.ramSize = NSNumber(UInt(self.ramSlider.value))
                 
         configuration.cpuIPS = Int(self.ipsTextField.text!)!
         
@@ -146,11 +146,11 @@ class ConfigurationEditorViewController: UITableViewController {
         
         configuration.vgaUpdateInterval = Int(self.vgaUpdateIntervalTextField.text!)!
         
-        configuration.soundBlaster16 = self.soundBlaster16Switch.on
+        configuration.soundBlaster16 = self.soundBlaster16Switch.isOn as NSNumber
         
-        configuration.sdlEnabled = self.sdlSiwtch.on
+        configuration.sdlEnabled = self.sdlSiwtch.isOn as NSNumber
         
-        configuration.feedbackEnabled = self.feedbackSwitch.on
+        configuration.feedbackEnabled = self.feedbackSwitch.isOn as NSNumber
         
         configuration.dmaTimer = Int(self.dmaTimerTextField.text!)!
         
@@ -158,7 +158,7 @@ class ConfigurationEditorViewController: UITableViewController {
         
         configuration.keyboardSerialDelay = Int(self.keyboardSerialDelayTextField.text!)!
         
-        configuration.networkEnabled = self.networkSwitch.on
+        configuration.networkEnabled = self.networkSwitch.isOn as NSNumber
         
         configuration.macAddress = self.macTextField.text!
         
@@ -174,36 +174,36 @@ class ConfigurationEditorViewController: UITableViewController {
         
         if error != nil {
             
-            let alertController = UIAlertController(title: NSLocalizedString("Error", comment: "Error"), message: NSLocalizedString("Could not save configuration.", comment: "Could not save configuration.") + " \\(\(error!.localizedDescription)\\)", preferredStyle: UIAlertControllerStyle.Alert)
+            let alertController = UIAlertController(title: NSLocalizedString("Error", comment: "Error"), message: NSLocalizedString("Could not save configuration.", comment: "Could not save configuration.") + " \\(\(error!.localizedDescription)\\)", preferredStyle: UIAlertControllerStyle.alert)
             
-            self.presentViewController(alertController, animated: true, completion: nil)
+            self.present(alertController, animated: true, completion: nil)
             
             return
         }
         
         // dismiss VC
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func cancel(sender: AnyObject) {
+    @IBAction func cancel(_ sender: AnyObject) {
         
         Store.sharedInstance.managedObjectContext.rollback()
         
-        self.dismissViewControllerAnimated(true, completion: nil);
+        self.dismiss(animated: true, completion: nil);
     }
     
-    @IBAction func ramSliderValueChanged(sender: UISlider) {
+    @IBAction func ramSliderValueChanged(_ sender: UISlider) {
                 
         ramLabel.text = "RAM: \(UInt(sender.value))"
     }
     
     // MARK: - Segues
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "showDrives" {
             
-            let drivesVC = segue.destinationViewController as! DrivesViewController
+            let drivesVC = segue.destination as! DrivesViewController
             
             drivesVC.configuration = self.configuration
         }

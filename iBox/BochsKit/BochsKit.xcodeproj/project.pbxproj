@@ -2282,6 +2282,7 @@
 				TargetAttributes = {
 					6ECAC70419FF107400D94D6C = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0830;
 					};
 					6ECAC70F19FF107500D94D6C = {
 						CreatedOnToolsVersion = 6.1;
@@ -2840,6 +2841,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bochs.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Debug;
@@ -2878,6 +2880,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.bochs.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Release;

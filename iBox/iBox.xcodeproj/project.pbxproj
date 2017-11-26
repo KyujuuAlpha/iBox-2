@@ -118,7 +118,6 @@
 
 /* Begin PBXFileReference section */
 		6B2A9C221E0A58C8002E4DA2 /* iBox.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = iBox.entitlements; sourceTree = "<group>"; };
-		6B49FD3F1E079ED1001F4F13 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
 		6BC8954F1E0C9E1200638113 /* FloppyDrive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FloppyDrive.swift; sourceTree = "<group>"; };
 		6E2DD8F21A0F459300774727 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		6E2DD9301A0F57A800774727 /* MBProgressHUD.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = MBProgressHUD.xcodeproj; path = ../MBProgressHUD/MBProgressHUD.xcodeproj; sourceTree = "<group>"; };
@@ -173,7 +172,6 @@
 		6B49FD3E1E079ED1001F4F13 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6B49FD3F1E079ED1001F4F13 /* SDL2.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -367,6 +365,7 @@
 				TargetAttributes = {
 					6ECAC6D019FF0C3600D94D6C = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0830;
 						SystemCapabilities = {
 							com.apple.WAC = {
 								enabled = 0;
@@ -375,6 +374,7 @@
 					};
 					6ECAC6E519FF0C3700D94D6C = {
 						CreatedOnToolsVersion = 6.1;
+						LastSwiftMigration = 0830;
 						TestTargetID = 6ECAC6D019FF0C3600D94D6C;
 					};
 				};
@@ -659,7 +659,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.troi.iBox2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s arm64";
 			};
@@ -683,7 +683,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.troi.iBox2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 2.3;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s arm64";
 			};
@@ -705,6 +705,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.colemancda.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iBox.app/iBox";
 			};
 			name = Debug;
@@ -721,6 +722,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.colemancda.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iBox.app/iBox";
 			};
 			name = Release;
