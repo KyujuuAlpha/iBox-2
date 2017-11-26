@@ -209,9 +209,9 @@ class DriveEditorViewController: UITableViewController, UITextFieldDelegate {
         switch cellItem {
             
         case .fileName: self.drive!.fileName = textField.text!
-        case .heads: (self.drive as! HardDiskDrive).heads = Int(textField.text!)!
-        case .cylinders: (self.drive as! HardDiskDrive).cylinders = Int(textField.text!)!
-        case .sectorsPerTrack: (self.drive as! HardDiskDrive).sectorsPerTrack = Int(textField.text!)!
+        case .heads: (self.drive as! HardDiskDrive).heads = NSNumber(integerLiteral: Int(textField.text!)!)
+        case .cylinders: (self.drive as! HardDiskDrive).cylinders = NSNumber(integerLiteral: Int(textField.text!)!)
+        case .sectorsPerTrack: (self.drive as! HardDiskDrive).sectorsPerTrack = NSNumber(integerLiteral: Int(textField.text!)!)
         default:
             debugPrint("Text edited in cell with identifer (\(cellItem)) without a implemented case in " + #function)
             abort()

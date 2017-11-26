@@ -9,6 +9,11 @@
 import Foundation
 import CoreData
 
+struct Static {
+    static var onceToken : Int = 0
+    static var instance : Store? = nil
+}
+
 final public class Store {
     
     private static var __once: () = {
@@ -22,10 +27,6 @@ final public class Store {
     // MARK: - Initialization
     
     public class var sharedInstance : Store {
-        struct Static {
-            static var onceToken : Int = 0
-            static var instance : Store? = nil
-        }
         _ = Store.__once
         return Static.instance!
     }

@@ -76,10 +76,10 @@ class NewDriveViewController: UITableViewController {
                 let newIndex = self.configuration!.ataInterfaces!.count
                 ataInterface = NSEntityDescription.insertNewObject(forEntityName: "ATAInterface", into: Store.sharedInstance.managedObjectContext) as? ATAInterface
                 ataInterface!.configuration = self.configuration!
-                ataInterface!.id = NSNumber(newIndex)
+                ataInterface!.id = NSNumber(integerLiteral: newIndex)
                 
                 // set IRQ
-                ataInterface!.irq = NSNumber(14 + newIndex)
+                ataInterface!.irq = NSNumber(integerLiteral: 14 + newIndex)
                 
             // doesnt have any drives
             case 0:

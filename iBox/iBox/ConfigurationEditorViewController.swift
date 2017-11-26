@@ -132,10 +132,10 @@ class ConfigurationEditorViewController: UITableViewController {
         case 2: configuration.bootDevice = "floppy"
         default: configuration.bootDevice = "cdrom"
         }
+
+        configuration.ramSize = NSNumber(integerLiteral: Int(UInt(self.ramSlider.value)))
         
-        configuration.ramSize = NSNumber(UInt(self.ramSlider.value))
-                
-        configuration.cpuIPS = Int(self.ipsTextField.text!)!
+        configuration.cpuIPS = NSNumber(integerLiteral: Int(self.ipsTextField.text!)!)
         
         switch self.vgaExtensionSegmentedControl.selectedSegmentIndex {
         case 0: configuration.vgaExtension = "none"
@@ -144,7 +144,7 @@ class ConfigurationEditorViewController: UITableViewController {
         default: configuration.vgaExtension = "none"
         }
         
-        configuration.vgaUpdateInterval = Int(self.vgaUpdateIntervalTextField.text!)!
+        configuration.vgaUpdateInterval = NSNumber(integerLiteral: Int(self.vgaUpdateIntervalTextField.text!)!)
         
         configuration.soundBlaster16 = self.soundBlaster16Switch.isOn as NSNumber
         
@@ -152,11 +152,11 @@ class ConfigurationEditorViewController: UITableViewController {
         
         configuration.feedbackEnabled = self.feedbackSwitch.isOn as NSNumber
         
-        configuration.dmaTimer = Int(self.dmaTimerTextField.text!)!
+        configuration.dmaTimer = NSNumber(integerLiteral: Int(self.dmaTimerTextField.text!)!)
         
-        configuration.keyboardPasteDelay = Int(self.keyBoardPasteDelayTextField.text!)!
+        configuration.keyboardPasteDelay = NSNumber(integerLiteral: Int(self.keyBoardPasteDelayTextField.text!)!)
         
-        configuration.keyboardSerialDelay = Int(self.keyboardSerialDelayTextField.text!)!
+        configuration.keyboardSerialDelay = NSNumber(integerLiteral: Int(self.keyboardSerialDelayTextField.text!)!)
         
         configuration.networkEnabled = self.networkSwitch.isOn as NSNumber
         

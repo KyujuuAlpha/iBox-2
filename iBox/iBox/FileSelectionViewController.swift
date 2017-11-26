@@ -150,7 +150,7 @@ class FileSelectionViewController: UITableViewController {
                     
                     (self.drive as! HardDiskDrive).sectorsPerTrack = 63
                     
-                    (self.drive as! HardDiskDrive).cylinders = NSNumber(BXImage.numberOfCylindersForImageWithSize(inMB: UInt(size)))
+                    (self.drive as! HardDiskDrive).cylinders = NSNumber(integerLiteral: Int(BXImage.numberOfCylindersForImageWithSize(inMB: UInt(size))))
                     
                     // perform segue and hide HUD after delay (segue will modify entity)
                     

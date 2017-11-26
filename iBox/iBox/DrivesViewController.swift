@@ -95,7 +95,7 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
         let ataInterface = drive.ataInterface
         
         // set model object
-        ataInterface.irq = NSNumber(Int(sender.value))
+        ataInterface.irq = NSNumber(integerLiteral: Int(sender.value))
         
         // get header view
         let headerView = self.tableView.headerView(forSection: sender.tag) as! ATAInterfaceTableViewHeaderView
@@ -180,7 +180,7 @@ class DrivesViewController: UITableViewController, NSFetchedResultsControllerDel
             let newestATAInterface = fetchResult!.last as! ATAInterface
             
             // max number of interfaces and drives
-            if newestATAInterface.id == maxATAInterfacesPerConfiguration - 1 && newestATAInterface.drives?.count == maxDrivesPerATAInterface {
+            if newestATAInterface.id.intValue == maxATAInterfacesPerConfiguration - 1 && newestATAInterface.drives?.count == maxDrivesPerATAInterface {
                 
                 return false
             }
