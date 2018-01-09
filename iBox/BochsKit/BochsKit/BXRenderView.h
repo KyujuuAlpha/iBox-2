@@ -30,6 +30,7 @@
 - (void)rescaleFrame;
 
 - (int *)imageData;
+
 - (CGContextRef)imageContext;
 - (void)recreateImageContextWithX:(int)x y:(int)y bpp:(int)bpp;
 
